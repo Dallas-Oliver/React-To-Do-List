@@ -9,7 +9,7 @@ class FullNote extends Component {
     super(props);
 
     this.state = {
-      term: "",
+      currentText: "",
       items: [],
       deletedItems: [],
       inputPlaceholder: ""
@@ -18,13 +18,13 @@ class FullNote extends Component {
 
   handleChange = event => {
     event.preventDefault();
-    this.setState({ term: event.target.value });
+    this.setState({ currentText: event.target.value });
   };
 
   onSubmit = event => {
     event.preventDefault();
 
-    if (this.state.term === "") {
+    if (this.state.currentText === "") {
       return;
     }
 
@@ -35,8 +35,8 @@ class FullNote extends Component {
     // }
 
     this.setState({
-      term: "",
-      items: [...this.state.items, this.state.term]
+      currentText: "",
+      items: [...this.state.items, this.state.currentText]
     });
   };
 
@@ -65,7 +65,7 @@ class FullNote extends Component {
 
   render() {
     return (
-      <div className="container-div">
+      <li className="container-div">
         <div className="full-note">
           <List deleteItems={this.deleteItems} items={this.state.items} />
           <form className="form">
@@ -78,7 +78,7 @@ class FullNote extends Component {
                     : "Add a Note..."
                 }
                 className="form-control"
-                value={this.state.term}
+                value={this.state.currentText}
                 onChange={this.handleChange}
               />
               <button className="btn btn-light btn-sm" onClick={this.onSubmit}>
@@ -97,7 +97,7 @@ class FullNote extends Component {
 
           <MenuButtons deleteNote={this.props.deleteNote} />
         </div>
-      </div>
+      </li>
     );
   }
 }

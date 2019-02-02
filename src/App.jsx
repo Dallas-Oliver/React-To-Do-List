@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FullNote from "./FullNote";
 import "./App.css";
-import propTypes from "prop-types";
+import Dragula from "../node_modules/dragula";
 
 class App extends Component {
   constructor(props) {
@@ -11,13 +11,16 @@ class App extends Component {
       notes: [],
       id: 0
     };
+    this.dragRef = React.createRef();
   }
 
-  renderNote = index => {
+  createNote = () => {
     let newNotes = [...this.state.notes];
-    newNotes.push(
-      <FullNote deleteNote={this.deleteNote} key={this.state.id} />
-    );
+    const id = this.state.id;
+    newNotes.push({
+      component: <FullNote deleteNote={() => this.deleteNote(id)} key={id} />,
+      id: id
+    });
 
     this.setState(
       prevState => {
@@ -27,15 +30,16 @@ class App extends Component {
         };
       },
       () => {
-        console.log(index);
+        console.log(this.state.id);
       }
     );
   };
 
-  deleteNote = index => {
+  deleteNote = id => {
     let newNotes = [...this.state.notes];
+    console.log(id);
 
-    newNotes.splice(index, 1);
+    newNotes = newNotes.filter(note => note.id !== id);
 
     this.setState({
       notes: newNotes
@@ -44,22 +48,23 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App-body">
+      <div className="App-body" ref={this.dragRef}>
         <div className="header">
-          <button onClick={this.renderNote} className="btn btn-warning btn-sm">
+          <button onClick={this.createNote} className="btn btn-warning btn-sm">
             New Note
           </button>
           <hr className="header-bottom-line" />
         </div>
-        <ul className="saved-notes">{this.state.notes}</ul>
+        <ul className="saved-notes">
+          {this.state.notes.map(note => note.component)}
+        </ul>
       </div>
     );
   }
+  dragRef = () => {
+    let options = {};
+    Dragula([document.querySelector(".saved-notes")], options);
+  };
 }
-
-App.propTypes = {
-  index: propTypes.number,
-  prevState: propTypes.number
-};
 
 export default App;
